@@ -43,6 +43,14 @@
 	<properties>
 		<target.env>unknown</target.env>
 
+		<default-jdk-version>1.8</default-jdk-version>
+
+		<!-- plugin versions -->
+		<version-maven-clean-plugin>2.6.1</version-maven-clean-plugin>
+		<version-maven-site-plugin>3.4</version-maven-site-plugin>
+
+		<version-versions-maven-plugin>2.2</version-versions-maven-plugin>
+		<version-maven-resources-plugin>2.7</version-maven-resources-plugin>
 		<version-maven-gpg-plugin>1.6</version-maven-gpg-plugin>
 		<version-maven-compiler-plugin>3.3</version-maven-compiler-plugin>
 		<version-maven-jar-plugin>2.6</version-maven-jar-plugin>
@@ -53,7 +61,13 @@
 		<version-maven-bundle-plugin>2.5.4</version-maven-bundle-plugin>
 		<version-maven-checkstyle-plugin>2.15</version-maven-checkstyle-plugin>
 		<version-license-maven-plugin>2.11</version-license-maven-plugin>
+		<version-maven-surefire-plugin>2.18.1</version-maven-surefire-plugin>
+		<version-maven-install-plugin>2.5.2</version-maven-install-plugin>
+		<version-maven-deploy-plugin>2.8.2</version-maven-deploy-plugin>
+
+		<!-- dependency versions -->
 		<version-junit>4.12</version-junit>
+
 	</properties>
 
 	<dependencies>
@@ -68,12 +82,38 @@
 	</dependencies>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${version-maven-clean-plugin}</version>
+					<executions>
+						<execution>
+							<id>default-clean</id>
+							<phase>clean</phase>
+							<goals>
+								<goal>clean</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>${version-maven-site-plugin}</version>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
+
 		<plugins>
 
+			<!-- always check and display information regarding the potential to update 
+				versions -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>versions-maven-plugin</artifactId>
-				<version>2.2</version>
+				<version>${version-versions-maven-plugin}</version>
 				<executions>
 					<execution>
 						<id>check-versions</id>
@@ -167,93 +207,213 @@
 		</profile>
 
 		<profile>
+			<!-- additional execution to create a jdk1_8 variant of a jar -->
 			<id>jdk1_8</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 			<properties>
 				<target.env>jdk1_8</target.env>
 			</properties>
 			<build>
-				<pluginManagement>
-					<plugins>
+				<plugins>
 
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-dependency-plugin</artifactId>
-							<version>${version-maven-dependency-plugin}</version>
-							<configuration>
-								<classifier>${target.env}</classifier>
-							</configuration>
-						</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>${version-maven-compiler-plugin}</version>
+						<executions>
+							<execution>
+								<id>jdk1_8-compile</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+								<configuration>
+									<fork>true</fork>
+									<outputDirectory>${project.build.outputDirectory}_jdk1_8</outputDirectory>
+									<source>1.8</source>
+									<target>1.8</target>
+									<testSource>1.8</testSource>
+									<testTarget>1.8</testTarget>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-compiler-plugin</artifactId>
-							<version>${version-maven-compiler-plugin}</version>
-							<configuration>
-								<source>1.8</source>
-								<target>1.8</target>
-								<testSource>1.8</testSource>
-								<testTarget>1.8</testTarget>
-							</configuration>
-						</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>${version-maven-jar-plugin}</version>
+						<executions>
+							<execution>
+								<id>jdk1_8-jar</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<classesDirectory>${project.build.outputDirectory}_jdk1_8</classesDirectory>
+									<classifier>jdk1_8</classifier>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-jar-plugin</artifactId>
-							<version>${version-maven-jar-plugin}</version>
-							<configuration>
-								<classifier>${target.env}</classifier>
-							</configuration>
-						</plugin>
-
-					</plugins>
-				</pluginManagement>
+				</plugins>
 			</build>
 		</profile>
 
 		<profile>
-			<id>none</id>
+			<id>java</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<properties>
 				<target.env></target.env>
 			</properties>
 			<build>
-				<pluginManagement>
-					<plugins>
 
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-dependency-plugin</artifactId>
-							<version>${version-maven-dependency-plugin}</version>
-							<configuration>
-								<classifier>${target.env}</classifier>
-							</configuration>
-						</plugin>
+				<plugins>
 
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-compiler-plugin</artifactId>
-							<version>${version-maven-compiler-plugin}</version>
-							<configuration>
-								<source>1.8</source>
-								<target>1.8</target>
-								<testSource>1.8</testSource>
-								<testTarget>1.8</testTarget>
-							</configuration>
-						</plugin>
+					<!-- validate -->
+					<!-- initialize -->
+					<!-- generate-sources -->
+					<!-- process-sources -->
+					<!-- generate-resources -->
+					<!-- process-resources -->
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>${version-maven-resources-plugin}</version>
+						<executions>
+							<execution>
+								<id>default-resources</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>resources</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>default-testResources</id>
+								<phase>process-test-resources</phase>
+								<goals>
+									<goal>testResources</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- compile -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>${version-maven-compiler-plugin}</version>
+						<executions>
+							<execution>
+								<id>default-compile</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+								<configuration>
+									<fork>true</fork>
+									<source>${default-jdk-version}</source>
+									<target>${default-jdk-version}</target>
+									<testSource>${default-jdk-version}</testSource>
+									<testTarget>${default-jdk-version}</testTarget>
+								</configuration>
+							</execution>
+							<execution>
+								<id>default-testCompile</id>
+								<phase>testCompile</phase>
+								<goals>
+									<goal>testCompile</goal>
+								</goals>
+								<configuration>
+									<source>${default-jdk-version}</source>
+									<target>${default-jdk-version}</target>
+									<testSource>${default-jdk-version}</testSource>
+									<testTarget>${default-jdk-version}</testTarget>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- process-classes -->
+					<!-- generate-test-sources -->
+					<!-- process-test-sources -->
+					<!-- generate-test-resources -->
+					<!-- process-test-resources -->
+					<!-- maven-resources-plugin, see process-resources -->
 
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-jar-plugin</artifactId>
-							<version>${version-maven-jar-plugin}</version>
-							<configuration>
-								<classifier>${target.env}</classifier>
-							</configuration>
-						</plugin>
+					<!-- test-compile -->
+					<!-- maven-compiler-plugin, see compile -->
 
-					</plugins>
-				</pluginManagement>
+					<!-- process-test-classes -->
+
+					<!-- test -->
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>${version-maven-surefire-plugin}</version>
+						<executions>
+							<execution>
+								<id>default-test</id>
+								<phase>test</phase>
+								<goals>
+									<goal>test</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- prepare-package -->
+
+					<!-- package -->
+					<plugin>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>${version-maven-jar-plugin}</version>
+						<executions>
+							<execution>
+								<id>default-jar</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- pre-integration-test -->
+					<!-- integration-test -->
+					<!-- post-integration-test -->
+					<!-- verify -->
+
+					<!-- install -->
+					<plugin>
+						<artifactId>maven-install-plugin</artifactId>
+						<version>${version-maven-install-plugin}</version>
+						<executions>
+							<execution>
+								<id>default-install</id>
+								<phase>install</phase>
+								<goals>
+									<goal>install</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- deploy -->
+					<plugin>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<version>${version-maven-deploy-plugin}</version>
+						<executions>
+							<execution>
+								<id>default-deploy</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>deploy</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+
 			</build>
 		</profile>
 
@@ -398,6 +558,7 @@
 								<email>${project.organization.url}</email>
 							</properties>
 							<excludes>
+								<exclude>pom.xml</exclude>
 								<exclude>**/README</exclude>
 								<exclude>src/test/resources/**</exclude>
 								<exclude>src/main/resources/**</exclude>
