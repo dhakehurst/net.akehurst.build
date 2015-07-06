@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.akehurst.build</groupId>
@@ -7,12 +8,41 @@
 
 	<packaging>pom</packaging>
 
+	<name>${project.groupId}:${project.artifactId}</name>
+	<inceptionYear>2015</inceptionYear>
+	<organization>
+		<name>Dr. David H. Akehurst</name>
+		<url>http://dr.david.h.akehurst.net</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Dr. David H. Akehurst</name>
+			<email>dr.david.h@akehurst.net</email>
+			<organization>akehurst.net</organization>
+			<organizationUrl>http://dr.david.h.akehurst.net</organizationUrl>
+		</developer>
+	</developers>
+
 	<prerequisites>
 		<maven>3.0.4</maven>
 	</prerequisites>
 
+	<scm>
+		<connection>scm:git:git@github.com:dhakehurst/net.akehurst.build.git</connection>
+		<developerConnection>scm:git:git@github.com:dhakehurst/net.akehurst.build.git</developerConnection>
+		<url>git@github.com:dhakehurst/net.akehurst.build.git</url>
+	</scm>
+
 	<properties>
 		<target.env>unknown</target.env>
+
 		<version-maven-gpg-plugin>1.6</version-maven-gpg-plugin>
 		<version-maven-compiler-plugin>3.3</version-maven-compiler-plugin>
 		<version-maven-jar-plugin>2.6</version-maven-jar-plugin>
@@ -21,10 +51,65 @@
 		<version-maven-javadoc-plugin>2.10.3</version-maven-javadoc-plugin>
 		<version-nexus-staging-maven-plugin>1.6.5</version-nexus-staging-maven-plugin>
 		<version-maven-bundle-plugin>2.5.4</version-maven-bundle-plugin>
+		<version-maven-checkstyle-plugin>2.15</version-maven-checkstyle-plugin>
+		<version-license-maven-plugin>2.11</version-license-maven-plugin>
+		<version-junit>4.12</version-junit>
 	</properties>
 
+	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${version-junit}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<id>check-versions</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>display-parent-updates</goal>
+							<goal>display-plugin-updates</goal>
+							<goal>display-dependency-updates</goal>
+							<goal>display-property-updates</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>${version-maven-checkstyle-plugin}</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>checkstyle</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+
 	<profiles>
-	
+
 		<profile>
 			<id>pgp</id>
 			<build>
@@ -242,7 +327,7 @@
 						<extensions>true</extensions>
 						<configuration>
 							<instructions>
-	
+
 							</instructions>
 						</configuration>
 						<executions>
@@ -269,28 +354,101 @@
 			</build>
 		</profile>
 
+		<profile>
+			<id>checkstyle</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-checkstyle-plugin</artifactId>
+						<version>${version-maven-checkstyle-plugin}</version>
+						<executions>
+							<execution>
+								<id>validate</id>
+								<phase>validate</phase>
+								<configuration>
+									<configLocation>config/sun_checks.xml</configLocation>
+									<encoding>UTF-8</encoding>
+									<consoleOutput>true</consoleOutput>
+									<failsOnError>true</failsOnError>
+									<linkXRef>false</linkXRef>
+								</configuration>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>license</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.mycila</groupId>
+						<artifactId>license-maven-plugin</artifactId>
+						<version>${version-license-maven-plugin}</version>
+						<configuration>
+							<header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+							<properties>
+								<owner>${project.organization.name}</owner>
+								<email>${project.organization.url}</email>
+							</properties>
+							<excludes>
+								<exclude>**/README</exclude>
+								<exclude>src/test/resources/**</exclude>
+								<exclude>src/main/resources/**</exclude>
+							</excludes>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>update-license</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.mycila</groupId>
+						<artifactId>license-maven-plugin</artifactId>
+						<version>${version-license-maven-plugin}</version>
+						<configuration>
+							<header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+							<properties>
+								<owner>${project.organization.name}</owner>
+								<email>${project.organization.url}</email>
+							</properties>
+							<excludes>
+								<exclude>pom.xml</exclude>
+								<exclude>**/README</exclude>
+								<exclude>src/test/resources/**</exclude>
+								<exclude>src/main/resources/**</exclude>
+							</excludes>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>format</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
 	</profiles>
-
-	<licenses>
-		<license>
-			<name>The Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		</license>
-	</licenses>
-
-	<developers>
-		<developer>
-			<name>Dr. David H. Akehurst</name>
-			<email>dr.david.h@akehurst.net</email>
-			<organization>akehurst.net</organization>
-			<organizationUrl>http://dr.david.h.akehurst.net</organizationUrl>
-		</developer>
-	</developers>
-
-	<scm>
-		<connection>scm:git:git@github.com:dhakehurst/net.akehurst.build.git</connection>
-		<developerConnection>scm:git:git@github.com:dhakehurst/net.akehurst.build.git</developerConnection>
-		<url>git@github.com:dhakehurst/net.akehurst.build.git</url>
-	</scm>
 
 </project>
