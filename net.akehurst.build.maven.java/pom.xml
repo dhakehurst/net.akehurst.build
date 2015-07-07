@@ -213,51 +213,53 @@
 				<target.env>jdk1_8</target.env>
 			</properties>
 			<build>
-				<plugins>
+				<pluginManagement>
+					<plugins>
 
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<version>${version-maven-compiler-plugin}</version>
-						<executions>
-							<execution>
-								<id>jdk1_8-compile</id>
-								<phase>compile</phase>
-								<goals>
-									<goal>compile</goal>
-								</goals>
-								<configuration>
-									<fork>true</fork>
-									<outputDirectory>${project.build.outputDirectory}_jdk1_8</outputDirectory>
-									<source>1.8</source>
-									<target>1.8</target>
-									<testSource>1.8</testSource>
-									<testTarget>1.8</testTarget>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-compiler-plugin</artifactId>
+							<version>${version-maven-compiler-plugin}</version>
+							<executions>
+								<execution>
+									<id>jdk1_8-compile</id>
+									<phase>compile</phase>
+									<goals>
+										<goal>compile</goal>
+									</goals>
+									<configuration>
+										<fork>true</fork>
+										<outputDirectory>${project.build.outputDirectory}_jdk1_8</outputDirectory>
+										<source>1.8</source>
+										<target>1.8</target>
+										<testSource>1.8</testSource>
+										<testTarget>1.8</testTarget>
+									</configuration>
+								</execution>
+							</executions>
+						</plugin>
 
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-jar-plugin</artifactId>
-						<version>${version-maven-jar-plugin}</version>
-						<executions>
-							<execution>
-								<id>jdk1_8-jar</id>
-								<phase>package</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-								<configuration>
-									<classesDirectory>${project.build.outputDirectory}_jdk1_8</classesDirectory>
-									<classifier>jdk1_8</classifier>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-jar-plugin</artifactId>
+							<version>${version-maven-jar-plugin}</version>
+							<executions>
+								<execution>
+									<id>jdk1_8-jar</id>
+									<phase>package</phase>
+									<goals>
+										<goal>jar</goal>
+									</goals>
+									<configuration>
+										<classesDirectory>${project.build.outputDirectory}_jdk1_8</classesDirectory>
+										<classifier>jdk1_8</classifier>
+									</configuration>
+								</execution>
+							</executions>
+						</plugin>
 
-				</plugins>
+					</plugins>
+				</pluginManagement>
 			</build>
 		</profile>
 
@@ -270,150 +272,150 @@
 				<target.env></target.env>
 			</properties>
 			<build>
+				<pluginManagement>
+					<plugins>
 
-				<plugins>
+						<!-- validate -->
+						<!-- initialize -->
+						<!-- generate-sources -->
+						<!-- process-sources -->
+						<!-- generate-resources -->
+						<!-- process-resources -->
+						<plugin>
+							<artifactId>maven-resources-plugin</artifactId>
+							<version>${version-maven-resources-plugin}</version>
+							<executions>
+								<execution>
+									<id>default-resources</id>
+									<phase>process-resources</phase>
+									<goals>
+										<goal>resources</goal>
+									</goals>
+								</execution>
+								<execution>
+									<id>default-testResources</id>
+									<phase>process-test-resources</phase>
+									<goals>
+										<goal>testResources</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
+						<!-- compile -->
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-compiler-plugin</artifactId>
+							<version>${version-maven-compiler-plugin}</version>
+							<executions>
+								<execution>
+									<id>default-compile</id>
+									<phase>compile</phase>
+									<goals>
+										<goal>compile</goal>
+									</goals>
+									<configuration>
+										<fork>true</fork>
+										<source>${default-jdk-version}</source>
+										<target>${default-jdk-version}</target>
+										<testSource>${default-jdk-version}</testSource>
+										<testTarget>${default-jdk-version}</testTarget>
+									</configuration>
+								</execution>
+								<execution>
+									<id>default-testCompile</id>
+									<phase>testCompile</phase>
+									<goals>
+										<goal>testCompile</goal>
+									</goals>
+									<configuration>
+										<source>${default-jdk-version}</source>
+										<target>${default-jdk-version}</target>
+										<testSource>${default-jdk-version}</testSource>
+										<testTarget>${default-jdk-version}</testTarget>
+									</configuration>
+								</execution>
+							</executions>
+						</plugin>
+						<!-- process-classes -->
+						<!-- generate-test-sources -->
+						<!-- process-test-sources -->
+						<!-- generate-test-resources -->
+						<!-- process-test-resources -->
+						<!-- maven-resources-plugin, see process-resources -->
 
-					<!-- validate -->
-					<!-- initialize -->
-					<!-- generate-sources -->
-					<!-- process-sources -->
-					<!-- generate-resources -->
-					<!-- process-resources -->
-					<plugin>
-						<artifactId>maven-resources-plugin</artifactId>
-						<version>${version-maven-resources-plugin}</version>
-						<executions>
-							<execution>
-								<id>default-resources</id>
-								<phase>process-resources</phase>
-								<goals>
-									<goal>resources</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>default-testResources</id>
-								<phase>process-test-resources</phase>
-								<goals>
-									<goal>testResources</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<!-- compile -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<version>${version-maven-compiler-plugin}</version>
-						<executions>
-							<execution>
-								<id>default-compile</id>
-								<phase>compile</phase>
-								<goals>
-									<goal>compile</goal>
-								</goals>
-								<configuration>
-									<fork>true</fork>
-									<source>${default-jdk-version}</source>
-									<target>${default-jdk-version}</target>
-									<testSource>${default-jdk-version}</testSource>
-									<testTarget>${default-jdk-version}</testTarget>
-								</configuration>
-							</execution>
-							<execution>
-								<id>default-testCompile</id>
-								<phase>testCompile</phase>
-								<goals>
-									<goal>testCompile</goal>
-								</goals>
-								<configuration>
-									<source>${default-jdk-version}</source>
-									<target>${default-jdk-version}</target>
-									<testSource>${default-jdk-version}</testSource>
-									<testTarget>${default-jdk-version}</testTarget>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<!-- process-classes -->
-					<!-- generate-test-sources -->
-					<!-- process-test-sources -->
-					<!-- generate-test-resources -->
-					<!-- process-test-resources -->
-					<!-- maven-resources-plugin, see process-resources -->
+						<!-- test-compile -->
+						<!-- maven-compiler-plugin, see compile -->
 
-					<!-- test-compile -->
-					<!-- maven-compiler-plugin, see compile -->
+						<!-- process-test-classes -->
 
-					<!-- process-test-classes -->
+						<!-- test -->
+						<plugin>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<version>${version-maven-surefire-plugin}</version>
+							<executions>
+								<execution>
+									<id>default-test</id>
+									<phase>test</phase>
+									<goals>
+										<goal>test</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
 
-					<!-- test -->
-					<plugin>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>${version-maven-surefire-plugin}</version>
-						<executions>
-							<execution>
-								<id>default-test</id>
-								<phase>test</phase>
-								<goals>
-									<goal>test</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
+						<!-- prepare-package -->
 
-					<!-- prepare-package -->
+						<!-- package -->
+						<plugin>
+							<artifactId>maven-jar-plugin</artifactId>
+							<version>${version-maven-jar-plugin}</version>
+							<executions>
+								<execution>
+									<id>default-jar</id>
+									<phase>package</phase>
+									<goals>
+										<goal>jar</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
 
-					<!-- package -->
-					<plugin>
-						<artifactId>maven-jar-plugin</artifactId>
-						<version>${version-maven-jar-plugin}</version>
-						<executions>
-							<execution>
-								<id>default-jar</id>
-								<phase>package</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
+						<!-- pre-integration-test -->
+						<!-- integration-test -->
+						<!-- post-integration-test -->
+						<!-- verify -->
 
-					<!-- pre-integration-test -->
-					<!-- integration-test -->
-					<!-- post-integration-test -->
-					<!-- verify -->
+						<!-- install -->
+						<plugin>
+							<artifactId>maven-install-plugin</artifactId>
+							<version>${version-maven-install-plugin}</version>
+							<executions>
+								<execution>
+									<id>default-install</id>
+									<phase>install</phase>
+									<goals>
+										<goal>install</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
 
-					<!-- install -->
-					<plugin>
-						<artifactId>maven-install-plugin</artifactId>
-						<version>${version-maven-install-plugin}</version>
-						<executions>
-							<execution>
-								<id>default-install</id>
-								<phase>install</phase>
-								<goals>
-									<goal>install</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-
-					<!-- deploy -->
-					<plugin>
-						<artifactId>maven-deploy-plugin</artifactId>
-						<version>${version-maven-deploy-plugin}</version>
-						<executions>
-							<execution>
-								<id>default-deploy</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>deploy</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-
+						<!-- deploy -->
+						<plugin>
+							<artifactId>maven-deploy-plugin</artifactId>
+							<version>${version-maven-deploy-plugin}</version>
+							<executions>
+								<execution>
+									<id>default-deploy</id>
+									<phase>deploy</phase>
+									<goals>
+										<goal>deploy</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
+					</plugins>
+				</pluginManagement>
 			</build>
 		</profile>
 
@@ -504,11 +506,17 @@
 					<plugin>
 						<artifactId>maven-jar-plugin</artifactId>
 						<version>${version-maven-jar-plugin}</version>
-						<configuration>
-							<archive>
-								<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-							</archive>
-						</configuration>
+						<executions>
+							<execution>
+								<id>default-jar</id>
+								<phase>package</phase>
+								<configuration>
+									<archive>
+										<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+									</archive>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>
